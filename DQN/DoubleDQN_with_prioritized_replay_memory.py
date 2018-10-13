@@ -57,9 +57,9 @@ class SumTree(object):
         Tree structure and array storage:
         Tree index:
              0         -> storing priority sum
-            / \
+            / \ 
           1     2
-         / \   / \
+         / \   / \ 
         3   4 5   6    -> storing priority for transitions
         Array type for storing:
         [0,1,2,3,4,5,6]
@@ -233,34 +233,35 @@ class  DoubleDQN_agent:
         return
 
 
-def train(agent, Episodes=1000, batch_size = 32):
-
-    done=False
-    agent.env._max_episode_steps = None
-    Score=[]
-    for e in range(Episodes):
-        state = np.reshape(agent.env.reset(), [1, agent.state_size])
-        
-        for time in range(1000):
-            #agent.env.render()
-
-            action = agent.act(state)
-            next_state, reward, done, _ = agent.env.step(action)
-            reward = reward if not done else -10
-            next_state = np.reshape(next_state, [1, agent.state_size])
-            agent.remember(state, action, reward, next_state, done)
-            state = next_state
-            if done:
-                print("episode: {}/{}, score: {}, epsilon: {:.2}".format(e, Episodes, time, agent.epsilon))
-                Score.append(time)
-                break
-            if agent.steps > 1000:
-                agent.replay(batch_size)
-                
-    return Score
 
 
 if __name__ =="__main__":
+
+    def train(agent, Episodes=1000, batch_size = 32):
+
+        done=False
+        agent.env._max_episode_steps = None
+        Score=[]
+        for e in range(Episodes):
+            state = np.expand_dims(agent.env.reset(), axis=0)
+            
+            for time in range(1000):
+                #agent.env.render()
+
+                action = agent.act(state)
+                next_state, reward, done, _ = agent.env.step(action)
+                reward = reward if not done else -10
+                next_state = np.expand_dims(next_state, axis=0)
+                agent.remember(state, action, reward, next_state, done)
+                state = next_state
+                if done:
+                    print("episode: {}/{}, score: {}, epsilon: {:.2}".format(e, Episodes, time, agent.epsilon))
+                    Score.append(time)
+                    break
+                if agent.steps > 1000:
+                    agent.replay(batch_size)
+                    
+        return Score
     Env=gym.make('CartPole-v0')
     agent=DoubleDQN_agent(Env)
 
