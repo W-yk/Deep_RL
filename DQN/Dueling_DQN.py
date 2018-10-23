@@ -13,7 +13,7 @@ from keras.optimizers import Adam
 
 
 
-class  DoubleDQN_agent:
+class  DuelingDQN_agent:
 
     def __init__(self,env):
         self.env=env
@@ -138,7 +138,7 @@ if __name__ =="__main__":
 
     Episodes=500
 
-    agent=DoubleDQN_agent(Env)
+    agent=DuelingDQN_agent(Env)
 
     score=train(agent, Episodes)
     plt.plot(range(Episodes), score)
