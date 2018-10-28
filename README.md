@@ -1,6 +1,6 @@
 # Deep_RL
-Implementations of some deep reinforcement learning algorithms
+Implementations of some deep reinforcement learning algorithms using tensorflow backend Keras.
 
 
-Can be imported to perform on some one dimension input games
+Can be imported to perform on other one dimension input games
 
