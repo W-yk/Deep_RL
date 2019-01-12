@@ -9,7 +9,7 @@ from matplotlib import pyplot as plt
 class DDPG_agent:
 
     def __init__(self, env):
-        self.buffer_size = 2000
+        self.buffer_size = 10000
         self.batch_size = 32
         self.gamma = 0.99
         self.epsilon = 1
@@ -26,10 +26,10 @@ class DDPG_agent:
         self.action_grads = tf.placeholder(tf.float32, None, "Critic_grads")
         self.training = tf.placeholder(tf.bool, None, "training_flag")
         
-        with tf.variable_scope("eval"):
+        with tf.variable_scope("eval",reuse=tf.AUTO_REUSE):
             self.v, self.Ctrain, self.grads = self.create_Critic_model("eval")
             self.actions, self.Atrain = self.create_Actor_model("eval")
-        with tf.variable_scope("target"):
+        with tf.variable_scope("target",reuse=tf.AUTO_REUSE):
             self.v_t = self.create_Critic_model("target")
             self.a_t = self.create_Actor_model("target")
 
@@ -39,7 +39,7 @@ class DDPG_agent:
         self.Memory = deque(maxlen=self.buffer_size)
         tf.summary.FileWriter("logs/", self.sess.graph)
 
-    def create_Actor_model(self, scope, lr=0.01):
+    def create_Actor_model(self, scope, lr=1e-4):
         with tf.variable_scope("Actor"):
             l1 = tf.layers.batch_normalization(self.s, training=self.training, name="BN")
             l2 = tf.layers.dense(l1, 24, tf.nn.relu, name="dense1")
@@ -56,7 +56,7 @@ class DDPG_agent:
         else:
             return actions
 
-    def create_Critic_model(self, scope, lr=0.01):
+    def create_Critic_model(self, scope, lr=1e-3):
         with tf.variable_scope("Critic"):
             # Different from usual DQN critic network takes in actions as well
 
@@ -153,7 +153,7 @@ if __name__ == "__main__":
             R = 0
             for time in range(1000):
 
-                agent.env.render()
+                #agent.env.render()
                 action = agent.act(state)
                 next_state, reward, done, _ = agent.env.step(np.clip(action[0], -1, 1))
                 reward = reward if not done else -10

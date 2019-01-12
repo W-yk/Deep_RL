@@ -14,7 +14,7 @@ class AC_agent:
         self.env=env
         self.state_size=env.env.observation_space.shape[0]
         self.action_size=env.env.action_space.n
-        self.learning_rate=0.01
+        self.learning_rate=0.0001
         self.Amodel=self._build_actor_model()
         self.Cmodel=self._build_critic_model()
         self.observations=[]
@@ -22,7 +22,7 @@ class AC_agent:
         self.actions=[]
         self.rewards=[]
 
-        self.gammar=0.9
+        self.gammar=0.99
         
     def _build_actor_model(self):
         
